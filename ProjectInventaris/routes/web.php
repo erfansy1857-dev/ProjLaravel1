@@ -9,3 +9,5 @@ Route::get('/', function () {
 route::get('/items/create', [itemController::class,'create']);
 route:: post('/items', [itemController::class,'store'])->name('items.store');
 
+// menggunakan resource route (otomatis membuat index, create, store, dll)
+Route::resource('items', itemController::class);

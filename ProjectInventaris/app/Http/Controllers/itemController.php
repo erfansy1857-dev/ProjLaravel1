@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use app\Models\Item;
+use App\Models\Item;
 
 class itemController extends Controller
 {
@@ -12,7 +12,8 @@ class itemController extends Controller
      */
     public function index()
     {
-        //
+        // Menampilkan daftar item (bisa diisi dengan Item::all() jika sudah ada halamannya)
+        return view('items.index');
     }
 
     /**
@@ -20,8 +21,8 @@ class itemController extends Controller
      */
     public function create()
     {
-        //kita buat fungsi untuk menampilkan halaman folmulir
-        return view('items.create'); //memanggil file create difolder view items
+        // Menampilkan halaman formulir tambah barang
+        return view('items.create');
     }
 
     /**
@@ -29,15 +30,28 @@ class itemController extends Controller
      */
     public function store(Request $request)
     {
-         Item::create( [
-             'code'=>$request->code,
-             'item_name'=>$request->item_name,
-             'category'=>$request->category,
-             'stock'=>$request->stock,
-             'condition'=>$request->condition,
-             'room_location'=>$request->room_location,
-    ]);
-    return redirect()->back()->with('success','Barang berhasil ditambahkan!');
+        // Validasi data yang dikirim dari form agar tidak kosong
+        $request->validate([
+            'code' => 'required|string|max:255',
+            'item_name' => 'required|string|max:255',
+            'category' => 'required|string|max:255',
+            'stock' => 'required|integer',
+            'condition' => 'required|string',
+            'room_location' => 'required|string|max:255',
+        ]);
+
+        // Menyimpan data ke database
+        Item::create([
+            'code' => $request->code,
+            'item_name' => $request->item_name,
+            'category' => $request->category,
+            'stock' => $request->stock,
+            'condition' => $request->condition,
+            'room_location' => $request->room_location,
+        ]);
+
+        // Kembali ke halaman sebelumnya dengan pesan sukses
+        return redirect()->back()->with('success', 'Barang berhasil ditambahkan!');
     }
 
     /**
